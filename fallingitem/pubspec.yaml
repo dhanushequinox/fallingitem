@@ -1,7 +1,10 @@
 name: flutter_falling_items
-description: A Flutter package for falling items animation
+description: A Flutter package for falling item animations like flowers, coins, etc.
 version: 0.2.0
-publish_to: "none"
+publish_to: "none" # Prevents publishing to pub.dev
+
+homepage: https://github.com/dhanushequinox/fallingitem
+repository: https://github.com/dhanushequinox/fallingitem
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -17,3 +20,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/Screenshot_1745923899.png
