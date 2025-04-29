@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_falling_items/flutter_falling_items.dart';
+import 'package:flutter_falling_items/falling_service.dart';
 
 void main() => runApp(const MyApp());
 

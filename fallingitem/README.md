@@ -1,170 +1,135 @@
-# flutter_falling_items
+# 🌸 flutter_falling_items
 
-A Flutter package that creates beautiful animations of items (flowers, icons, images, etc.) falling from top to bottom like raindrops.
+A Flutter package for adding beautiful falling item animations like flowers, coins, icons, or images — creating a soft, raindrop-like visual experience 🌧️🌼
 
-## Features
+---
 
-- Create animated falling items (like flowers or icons)
-- Customize size, count, and animation duration
-- Easy integration with any Flutter app
-- Support for multiple item types simultaneously
-- Optimized performance with controller pooling
+## 📸 Preview
 
-## Getting started
+Here's a preview of how the falling items look:
 
-Add the package to your pubspec.yaml:
+![Preview Image](https://raw.githubusercontent.com/dhanushequinox/fallingitem/main/lib/assets/Screenshot_1745923899.png)
+
+---
+
+## ✨ Features
+
+- 🌼 Animate any widget falling from top to bottom
+- 📸 Supports images from assets or network
+- 🎯 Customize count, size, and speed
+- 🧩 Easy to plug into any Flutter app
+- ⚙️ Built-in controller pooling for better performance
+
+---
+
+## 🚀 Getting Started
+
+Add this package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_falling_items: ^0.0.1
+  flutter_falling_items: ^1.1.4
 ```
 
-## Usage
+---
 
-### Basic Usage
+## 📦 Usage
+
+### ✅ Basic Example
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_falling_items/flutter_falling_items.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyFallingScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FallingItemsWidget(
-        itemProviders: [
-          NetworkImage('https://example.com/flower.png'),
-        ],
-        child: Center(
-          child: Text('Your content here'),
-        ),
-      ),
-    );
-  }
-}
-```
-
-### With Controller
-
-```dart
-class MyHomePage extends StatefulWidget {
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyFallingScreen> createState() => _MyFallingScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<FallingItemsWidgetState> _fallingItemsKey = GlobalKey<FallingItemsWidgetState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FallingItemsWidget(
-        key: _fallingItemsKey,
-        autoStart: false,
-        itemProviders: [
-          NetworkImage('https://example.com/flower.png'),
-          AssetImage('assets/images/petal.png'),
-        ],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Your content here'),
-            ElevatedButton(
-              onPressed: () {
-                _fallingItemsKey.currentState?.showAllItems();
-              },
-              child: Text('Show Falling Items'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-```
-
-## Customization
-
-The `FallingItemsWidget` supports the following parameters:
-
-- `itemProviders`: List of `ImageProvider`s for the falling items
-- `child`: The widget to display beneath the falling items
-- `autoStart`: Whether to start the animation automatically (default: true)
-- `itemCount`: Number of items per provider (default: 15)
-- `itemSize`: Size of each item in pixels (default: 25)
-- `minDuration`: Minimum animation duration in milliseconds (default: 1500)
-- `maxDuration`: Maximum animation duration in milliseconds (default: 3500)
-
-## Additional Information
-
-### Performance Tips
-
-- Use appropriately sized images to avoid excessive memory usage
-- Limit the number of items when using on lower-end devices
-- Call `stopAllAnimations()` when the animation is not visible
-
-### Example with Assets
-
-```dart
-FallingItemsWidget(
-  itemProviders: [
-    AssetImage('assets/images/flower1.png'),
-    AssetImage('assets/images/flower2.png'),
-    AssetImage('assets/images/petal.png'),
-  ],
-  itemCount: 10, // 10 of each image
-  itemSize: 30,
-  minDuration: 2000,
-  maxDuration: 4000,
-  child: YourWidget(),
-)
-```
-
-### Advanced Usage with Direct API
-
-If you need more control over the animation, you can use the `FallingItemsService` directly:
-
-```dart
-class _MyCustomWidgetState extends State<MyCustomWidget> with TickerProviderStateMixin {
-  final FallingItemsService _fallingItemsService = FallingItemsService();
-  final Map<ImageProvider, List<Widget>> _itemsMap = {};
+class _MyFallingScreenState extends State<MyFallingScreen>
+    with TickerProviderStateMixin {
+  final FlowerService _flowerService = FlowerService();
+  final Map<ImageProvider, List<Widget>> _flowersMap = {};
   final Map<ImageProvider, List<AnimationController>> _controllersMap = {};
-  
-  void _addFallingItems() {
-    _fallingItemsService.addFallingItems(
-      itemProvider: NetworkImage('https://example.com/flower.png'),
-      screenSize: MediaQuery.of(context).size,
+
+  late Size _screenSize;
+
+  void _addFlowers(ImageProvider imageProvider) {
+    _flowerService.addFlowersForImage(
+      imageProvider: imageProvider,
+      screenSize: _screenSize,
       vsync: this,
-      itemsMap: _itemsMap,
+      flowersMap: _flowersMap,
       controllersMap: _controllersMap,
-      itemCount: 20,
-      itemSize: 30,
-      minDuration: 2000,
-      maxDuration: 5000,
     );
     setState(() {});
   }
-  
-  @override
-  void dispose() {
-    _fallingItemsService.dispose();
-    super.dispose();
-  }
-  
+
   @override
   Widget build(BuildContext context) {
-    final allItems = _itemsMap.values.expand((items) => items).toList();
-    
-    return Stack(
-      children: [
-        YourMainContent(),
-        ...allItems,
-      ],
+    _screenSize = MediaQuery.of(context).size;
+    final flowerWidgets =
+        _flowersMap.values.expand((widgets) => widgets).toList();
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(color: Colors.white),
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                _addFlowers(
+                  const NetworkImage(
+                    'https://purepng.com/public/uploads/large/flower-2wq.png',
+                  ),
+                );
+              },
+              child: Text('Let it Rain Flowers!'),
+            ),
+          ),
+          ...flowerWidgets,
+        ],
+      ),
     );
   }
 }
 ```
 
-## License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🛠️ Customization
+
+You can customize behavior inside `addFlowersForImage()`:
+
+| Parameter         | Type             | Description                              |
+|------------------|------------------|------------------------------------------|
+| `imageProvider`  | `ImageProvider`  | Image to fall from top                   |
+| `screenSize`     | `Size`           | Dimensions of the current screen         |
+| `vsync`          | `TickerProvider` | Required for animations                  |
+| `flowersMap`     | `Map`            | Internal map storing falling widgets     |
+| `controllersMap` | `Map`            | Internal map storing animation controllers|
+
+---
+
+## 💡 Tips
+
+- Use compressed images for better memory efficiency
+- Dispose controllers if you're not reusing them
+- Combine multiple image types for varied animations
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.  
+See the full license [here](https://github.com/dhanushequinox/fallingitem/blob/main/LICENSE).
+
+---
+
+## 🔗 Links
+
+- 🌐 [GitHub Repository](https://github.com/dhanushequinox/fallingitem)
+- 🏠 [Homepage](https://github.com/dhanushequinox/fallingitem)
+- 📸 [Image](https://github.com/dhanushequinox/fallingitem/blob/main/fallingitem/lib/assets/Screenshot_1745923899.png)
